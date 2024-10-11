@@ -34,3 +34,16 @@ section {
 p {
     color: #666;
 }
+
+.chat-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 20px;
+}
+.messages-container {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 10px;
+}
