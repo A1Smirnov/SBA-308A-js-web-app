@@ -25,13 +25,26 @@
             </div>
         </section>
 
-        <!-- News Section -->
-        <section id="news">
-            <h2>Latest Technology News</h2> <!-- Change category -->
-            <div id="news-content">
-                <p>Loading news data...</p>
-            </div>
-        </section>
+<!-- News Section -->
+<!-- Control inputs for Search news and Filter category -->
+
+        <div id="controls">
+            <input type="text" id="search-input" placeholder="Search news...">
+            <button id="search-button">Search</button>
+            
+            <select id="category-select">
+                <option value="general">General</option>
+                <option value="business">Business</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="health">Health</option>
+                <option value="science">Science</option>
+                <option value="sports">Sports</option>
+                <option value="technology">Technology</option>
+            </select>
+        </div>
+        
+        <div id="news-content"></div>
+
     </div>
 
     <script type="module" src="app.js"></script>
