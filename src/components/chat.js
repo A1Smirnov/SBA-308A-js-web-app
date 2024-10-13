@@ -1,8 +1,8 @@
 // src/components/chat.js
 
 // Initialize Pusher
-const pusher = new Pusher('YOUR_APP_KEY', {
-    cluster: 'YOUR_APP_CLUSTER'
+const pusher = new Pusher('a2621de12b5ea94fb277', {
+    cluster: 'us3'
 });
 
 // Subscribe to the channel
