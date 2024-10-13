@@ -2,16 +2,9 @@
 //  src/components/chat.js
 
 // Import necessary Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-import './components/chat.js'; // Import the chat component
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, onSnapshot } from "firebase/firestore";
 
-// Firebase configuration
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -27,30 +20,44 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const db = getFirestore(app);
 
 // Function to send a message
-function sendMessage(name, message) {
-    const messageData = {
-        name: name,
-        message: message,
-        timestamp: Date.now()
-    };
-    const newMessageKey = ref(database, 'messages').push().key; // Generate a new key
-    set(ref(database, 'messages/' + newMessageKey), messageData); // Store the message
+async function sendMessage(name, message) {
+    try {
+        // Create a new message document in the "messages" collection
+        const docRef = await addDoc(collection(db, "messages"), {
+            name: name,
+            message: message,
+            timestamp: Date.now()
+        });
+        console.log('Message sent with ID: ', docRef.id);
+    } catch (e) {
+        console.error('Error adding document: ', e);
+    }
 }
 
 // Function to fetch messages and display them
-function fetchMessages() {
-    const messagesRef = ref(database, 'messages');
-    onValue(messagesRef, (snapshot) => {
-        const messages = snapshot.val();
-        const messagesContainer = document.getElementById('messages-container');
-        messagesContainer.innerHTML = ''; // Clear existing messages
-        for (let key in messages) {
-            const msg = messages[key];
-            messagesContainer.innerHTML += `<div><strong>${msg.name}:</strong> ${msg.message}</div>`;
-        }
+function loadMessages() {
+    const messagesRef = collection(db, "messages");
+    // Listen for real-time updates
+    onSnapshot(messagesRef, (querySnapshot) => {
+        const messages = [];
+        querySnapshot.forEach((doc) => {
+            messages.push({ id: doc.id, ...doc.data() });
+        });
+        // Update the chat UI with the new messages
+        displayMessages(messages);
+    });
+}
+
+function displayMessages(messages) {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ""; // Clear the existing messages
+    messages.forEach(msg => {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = `${msg.name}: ${msg.message}`;
+        messagesContainer.appendChild(messageElement);
     });
 }
 
@@ -72,4 +79,4 @@ function setupChat() {
 
 // Initialize chat
 setupChat();
-fetchMessages();
+loadMessages(); // Call loadMessages to fetch and display messages
