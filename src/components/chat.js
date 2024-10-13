@@ -1,56 +1,32 @@
-// New file to meet the requirment of user manipulation of data within the API through the use of POST, PUT, or PATCH requests
-//  src/components/chat.js
+// src/components/chat.js
 
-// Import necessary Firebase modules
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, onSnapshot } from "firebase/firestore";
+// Initialize Pusher
+const pusher = new Pusher('YOUR_APP_KEY', {
+    cluster: 'YOUR_APP_CLUSTER'
+});
 
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyA1Db97dC5CkrnYdte3e0nPI893hZx9VZY",
-  authDomain: "mainhub-yo.firebaseapp.com",
-  databaseURL: "https://mainhub-yo-default-rtdb.firebaseio.com",
-  projectId: "mainhub-yo",
-  storageBucket: "mainhub-yo.appspot.com",
-  messagingSenderId: "82996133468",
-  appId: "1:82996133468:web:71057a48262351736ab099"
-};
-
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// Subscribe to the channel
+const channel = pusher.subscribe('chat');
 
 // Function to send a message
 async function sendMessage(name, message) {
-    try {
-        // Create a new message document in the "messages" collection
-        const docRef = await addDoc(collection(db, "messages"), {
-            name: name,
-            message: message,
-            timestamp: Date.now()
-        });
-        console.log('Message sent with ID: ', docRef.id);
-    } catch (e) {
-        console.error('Error adding document: ', e);
+    // Here you should send the message to your server (via a POST request) to save it
+    const response = await fetch('YOUR_SERVER_ENDPOINT', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, message }),
+    });
+
+    if (response.ok) {
+        console.log('Message sent');
+    } else {
+        console.error('Error sending message');
     }
 }
 
-// Function to fetch messages and display them
-function loadMessages() {
-    const messagesRef = collection(db, "messages");
-    // Listen for real-time updates
-    onSnapshot(messagesRef, (querySnapshot) => {
-        const messages = [];
-        querySnapshot.forEach((doc) => {
-            messages.push({ id: doc.id, ...doc.data() });
-        });
-        // Update the chat UI with the new messages
-        displayMessages(messages);
-    });
-}
-
+// Function to display messages in the chat interface
 function displayMessages(messages) {
     const messagesContainer = document.getElementById('messages');
     messagesContainer.innerHTML = ""; // Clear the existing messages
@@ -60,6 +36,11 @@ function displayMessages(messages) {
         messagesContainer.appendChild(messageElement);
     });
 }
+
+// Listen for new messages
+channel.bind('message-sent', function(data) {
+    displayMessages([data]); // Display the new message
+});
 
 // Setup chat interface
 function setupChat() {
@@ -79,4 +60,3 @@ function setupChat() {
 
 // Initialize chat
 setupChat();
-loadMessages(); // Call loadMessages to fetch and display messages
