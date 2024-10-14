@@ -19,14 +19,17 @@ const pusher = new Pusher({
 
 // Используйте CORS middleware для разрешения запросов
 app.use(cors());
-
 app.use(bodyParser.json());
 
 // Endpoint to send messages
 app.post('/send-message', async (req, res) => {
     try {
         const { name, message } = req.body;
-        await pusher.trigger('chat', 'message-sent', { name, message });
+
+        // Создание временной метки
+        const timestamp = new Date().toLocaleTimeString(); // Форматирование времени по вашему желанию
+
+        await pusher.trigger('chat', 'message-sent', { name, message, timestamp }); // Отправка временной метки
         res.status(200).send('Message sent');
     } catch (error) {
         console.error('Error sending message:', error);
@@ -39,4 +42,3 @@ console.log(`server file test!`);
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-

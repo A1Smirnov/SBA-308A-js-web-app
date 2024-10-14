@@ -10,7 +10,6 @@ const channel = pusher.subscribe('chat');
 
 // Function to send a message
 async function sendMessage(name, message) {
-    // Here you should send the message to your server (via a POST request) to save it
     const response = await fetch('http://localhost:3000/send-message', {
         method: 'POST',
         headers: {
@@ -33,7 +32,8 @@ function displayMessages(messages) {
     // Iterate through each message and append it to the container
     messages.forEach(msg => {
         const messageElement = document.createElement('div');
-        messageElement.textContent = `${msg.name}: ${msg.message}`;
+        // Изменяем формат отображения сообщения
+        messageElement.textContent = `[${msg.timestamp}] ${msg.name}: ${msg.message}`;
         messagesContainer.appendChild(messageElement);
     });
 
