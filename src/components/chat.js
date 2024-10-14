@@ -18,10 +18,7 @@ async function sendMessage(name, message) {
         },
         body: JSON.stringify({ name, message }),
     });
-    if (!nameInput || !messageInput) {
-        alert('Please enter both a name and a message.');
-        return;
-    }
+
     if (response.ok) {
         console.log('Message sent');
     } else {
