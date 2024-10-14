@@ -19,19 +19,21 @@ const pusher = new Pusher({
 app.use(bodyParser.json());
 
 // Endpoint to send messages
-app.post('/send-message', (req, res) => {
-    const { name, message } = req.body;
-
-    // Trigger a new message event on Pusher
-    pusher.trigger('chat', 'message-sent', {
-        name,
-        message
-    });
-
-    res.status(200).send('Message sent');
+app.post('/send-message', async (req, res) => {
+    try {
+        const { name, message } = req.body;
+        await pusher.trigger('chat', 'message-sent', { name, message });
+        res.status(200).send('Message sent');
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).send('Failed to send message');
+    }
 });
 
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+const cors = require('cors');
+app.use(cors());

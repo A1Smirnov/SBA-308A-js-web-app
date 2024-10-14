@@ -3,23 +3,14 @@ import { getCryptoRates } from './components/crypto.js';
 import { getNewsData, loadPreferences, savePreferences } from './components/news.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Fetch weather data
-    getWeatherData();
+    // Load data
+    Promise.all([
+        getWeatherData(),
+        getCryptoRates(),
+        getNewsData(),
+    ]).catch(error => console.error('Error loading data:', error));
 
-    // Fetch cryptocurrency data
-    getCryptoRates();
-
-    // Fetch news data
-    getNewsData();
-});
-
-
-//////////////////////////////////////
-
-
-
-// Loading localStorage
-document.addEventListener('DOMContentLoaded', () => {
+    // Load preferences
     loadPreferences();
 
     // Eventlistener for Search

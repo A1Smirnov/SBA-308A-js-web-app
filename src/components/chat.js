@@ -11,14 +11,17 @@ const channel = pusher.subscribe('chat');
 // Function to send a message
 async function sendMessage(name, message) {
     // Here you should send the message to your server (via a POST request) to save it
-    const response = await fetch('YOUR_SERVER_ENDPOINT', {
+    const response = await fetch('http://localhost:3000/send-message', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name, message }),
     });
-
+    if (!nameInput || !messageInput) {
+        alert('Please enter both a name and a message.');
+        return;
+    }
     if (response.ok) {
         console.log('Message sent');
     } else {
@@ -29,12 +32,16 @@ async function sendMessage(name, message) {
 // Function to display messages in the chat interface
 function displayMessages(messages) {
     const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = ""; // Clear the existing messages
+
+    // Iterate through each message and append it to the container
     messages.forEach(msg => {
         const messageElement = document.createElement('div');
         messageElement.textContent = `${msg.name}: ${msg.message}`;
         messagesContainer.appendChild(messageElement);
     });
+
+    // Scroll to the bottom of the messages container to show the latest message
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 // Listen for new messages
