@@ -1,6 +1,3 @@
-Конечно! Вот обновленная версия `README.md` для вашего проекта `MainHub`, который включает функции, такие как отображение погоды, курсов криптовалют, новостей и чат:
-
-```markdown
 # MainHub
 
 MainHub is a responsive web application that aggregates important user data, including weather information, cryptocurrency rates, news articles, and a chat system. This project is built using HTML, CSS, JavaScript, and integrates with external APIs for real-time data.
